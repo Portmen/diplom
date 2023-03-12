@@ -1,8 +1,40 @@
 from tkinter import *
 from tkinter import ttk
+from os import listdir
+from os.path import isdir, join
+
+def reset_list_cont():
+    path = '/var/lib/machines/'
+    list_cont = [cont for cont in listdir(path) if isdir(join(path, cont))]
+    list_cont_var = StringVar(value=list_cont)
+    return list_cont_var
+
+def click_btn1():
+    create_cont = Tk()
 
 
-#def create_container()
+def click_btn5():
+    info_cont = Tk()
+
+
+
+
+def click_btn6():
+    log_cont = Tk()
+
+
+
+def click_btn7():
+    control_resourses = Tk()
+
+
+
+def click_btn8():
+    consol_cont = Tk()
+
+й
+
+
 
 
 if __name__ == "__main__":
@@ -12,8 +44,8 @@ if __name__ == "__main__":
 
     #icon =  PhotoImage(file="./icon.png")
     #app.iconphoto(False, icon)
-
-    btn_1 = ttk.Button(text="Создать контейнер")
+    
+    btn_1 = ttk.Button(text="Создать контейнер",command=click_btn1)
     btn_2 = ttk.Button(text="Запуск")
     btn_3 = ttk.Button(text="Остановить")
     btn_4 = ttk.Button(text="Удалить")
@@ -37,9 +69,13 @@ if __name__ == "__main__":
     btn_6.grid(row=6, ipadx=20, ipady=10, padx=[10, 20], pady=10, sticky=NSEW)
     btn_7.grid(row=7, ipadx=20, ipady=10, padx=[10, 20], pady=10, sticky=NSEW)
     btn_8.grid(row=8, ipadx=20, ipady=10, padx=[10, 20], pady=10, sticky=NSEW)
+
     
-    cont_list = Listbox()
+    list_cont_var = reset_list_cont()
+    cont_list = Listbox(listvariable=list_cont_var)
     cont_list.grid(row=1 ,rowspan=8, column=1, sticky=NSEW, pady=[50, 10], padx=[10, 30])
+    cont_list.yview_scroll(number=1, what="units")
+
 
 
     app.mainloop() 
