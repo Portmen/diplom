@@ -1,0 +1,7 @@
+2023-03-14 08:55:52.246 [info] Started initializing default profile extensions in extensions installation folder. file:///root/.vscode/extensions
+2023-03-14 08:55:52.688 [info] Completed initializing default profile extensions in extensions installation folder. file:///root/.vscode/extensions
+2023-03-14 08:55:54.898 [error] RequestService#request (browser) - error https://vscodeexperiments.azureedge.net/experiments/vscode-experiments.json {"name":"Offline"}
+2023-03-14 08:55:54.909 [error] RequestService#request (browser) - error https://marketplace.visualstudio.com/_apis/public/gallery/extensionquery {"name":"Offline"}
+2023-03-14 08:55:54.909 [error] Offline: Offline: Offline
+    at v.onerror (vscode-file://vscode-app/usr/share/code/resources/app/out/vs/workbench/workbench.desktop.main.js:72:1466)
+2023-03-14 08:55:55.627 [info] [perf] Render performance baseline is 31ms
