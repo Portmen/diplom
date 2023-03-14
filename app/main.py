@@ -47,10 +47,6 @@ def click_btn8():
     console_cont.title("Console container")
     console_cont.geometry("700x800+600+100")
 
-<<<<<<< HEAD
-
-=======
->>>>>>> f580f83a51694a7d3931c9c305b272c6380051c7
 
 
 
