@@ -32,7 +32,7 @@ def click_btn7():
 def click_btn8():
     consol_cont = Tk()
 
-й
+
 
 
 
