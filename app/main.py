@@ -1,5 +1,6 @@
 import time
-
+import subprocess
+import shlex
 from tkinter import *
 from tkinter import ttk
 from os import listdir, system
@@ -47,6 +48,12 @@ def click_btn1():
     create_cont = Tk()
     create_cont.title("Create container")
     create_cont.geometry("700x800+600+100")
+    archive_path = ""
+    image_name = ""
+    state_create = ""
+    disk_size = ""
+    proc = subprocess.Popen([archive_path, image_name, state_create, disk_size], stdout=subprocess.PIPE)
+    output = proc.stdout.read() #Вывод запуска скрипта
 
 
 def click_btn5():

@@ -6,22 +6,24 @@ disk_size=$4
 
 if [[ "$state_create" == "archive" ]]
 then
-  if [[ ! -f "$archive_path" || ("$archive_path" == "*.tar.xz" && "$archive_path" == "*.raw") ]]
+  if [[ -f "$archive_path" && ( $archive_path == *.tar.xz || $archive_path == *.raw ) ]]
   then
-    cp "$archive_path" ../images-archive/
+    cp "$archive_path" "../images-archive/"
     
-    if [[ "$archive_path" == "*.tar.xz" ]]
+    if [[ $archive_path == *.tar.xz ]]
     then
       cp "$archive_path" "/var/lib/machines/$image_name.tar.xz"
-      machinectl import-tar "var/lib/machines/$image_name.tar.xz" "$image_name"
+      machinectl import-tar "/var/lib/machines/$image_name.tar.xz" "$image_name"
       machinectl start $image_name
+      exit 0
     fi
 
-    if [[ "$archive_path" == "*.raw" ]]
+    if [[ $archive_path == *.raw ]]
     then
       cp "$archive_path" "/var/lib/machines/$image_name.raw"
       machinectl import-raw "var/lib/machines/$image_name.raw" "$image_name"
-      machinectl start $image_name
+      machinectl start "$image_name"
+      exit 0
     fi    
 
   else
@@ -29,6 +31,7 @@ then
     exit 1   
   fi   
 else
-  machinectl start $image_name
+  machinectl start "$image_name"
+  exit 0
 fi  
 
