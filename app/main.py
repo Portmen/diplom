@@ -1,7 +1,10 @@
+import time
+
 from tkinter import *
 from tkinter import ttk
 from os import listdir, system
 from os.path import isdir, join
+
 
 
 def craete_btn(state_btn):
@@ -50,13 +53,33 @@ def click_btn5():
     info_cont = Tk()
     info_cont.title("Information")
     info_cont.geometry("700x800+600+100")
+    cont_name = cont_list.curselection() #Выбранный контейнер в списке
+    label = ttk.Label(text="Информация о контейнере", background="#FFFFFF")
+    label.grid(ipady=20, ipadx=20, padx=10,  pady=10, sticky=NSEW)
 
+
+
+#Разобраться с выводом логов и их обновлением в реальном времени
 
 def click_btn6():
     log_cont = Tk()
     log_cont.title("Logs")
     log_cont.geometry("700x800+600+100")
-    logs_list = system("")
+    log_var = " "
+    log_list = log_var.split("\n")
+    label = ttk.Label(text="Логи контейнера", background="#FFFFFF")
+    label.grid(ipady=20, ipadx=20, padx=10,  pady=10, sticky=NSEW)
+    while True:
+        time.sleep(5)
+        log_var = " "
+        log_list2 = log_var.split("\n")
+        log_list.append(log_list2[-1])
+        label = ttk.Label(text="Логи контейнера", background="#FFFFFF")
+        label.grid(ipady=20, ipadx=20, padx=10,  pady=10, sticky=NSEW)
+
+        
+
+    #logs_list = system("")
 
 
 def click_btn7():
