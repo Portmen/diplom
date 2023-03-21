@@ -1,6 +1,5 @@
 import time
-import subprocess
-import shlex
+#import subprocess
 from tkinter import *
 from tkinter import ttk
 from os import listdir, system
@@ -41,19 +40,56 @@ def reset_list_cont():
     cont_list = Listbox(listvariable=list_cont_var, font=8, bd=3)
     cont_list.grid(row=1, rowspan=9, column=1, pady=[
                    50, 10], padx=[10, 30], sticky=NSEW)
+    cont_list.bind("<<ListboxSelect>>", change_state_btn)
     cont_list.yview_scroll(number=1, what="units")
 
-
+#Разобраться с отображением
 def click_btn1():
+    global create_cont, archive_btn, header_2
     create_cont = Tk()
     create_cont.title("Create container")
     create_cont.geometry("700x800+600+100")
+    for r in range(5):
+        create_cont.rowconfigure(index=r, weight=1)
+    for c in range(2):
+        create_cont.columnconfigure(index=c, weight=1)
+
+    state_list = ["archive", "image"]
+    state = StringVar()
+
+    header_1 = ttk.Label(create_cont, text="Выберите способ создания:", font=12)
+    header_1.grid(row=0, column=0, columnspan=2, padx=10, sticky=W)
+
+    image_btn = ttk.Radiobutton(create_cont, text="Создание контейнера из имеющихся образов", value=state_list[1], variable=state, command=create_combobox_create_ct, font=10)
+    image_btn.grid(row=1, column=0, columnspan=2, padx=15, sticky=W)
+
+    archive_btn = ttk.Radiobutton(create_cont, text="Создание контейнера из архива с ФС", value=state_list[0], variable=state, font=10)
+    archive_btn.grid(row=2, column=0, columnspan=2, padx=15, sticky=W)
+
+    header_2 = ttk.Label(create_cont, text="Укажите объём выделяемой памяти для контейнера:", font=12)
+    header_2.grid(row=3, column=0, columnspan=2, padx=10, sticky=W)
+
+    if state.get() == state_list[1]:
+        state_create = state_list[1]
+        image_name = sel_image
+
+    elif state.get() == state_list[0]:
+        state_create = state_list[0]    
+
     archive_path = ""
     image_name = ""
-    state_create = ""
     disk_size = ""
-    proc = subprocess.Popen([archive_path, image_name, state_create, disk_size], stdout=subprocess.PIPE)
-    output = proc.stdout.read() #Вывод запуска скрипта
+    #proc = subprocess.Popen([archive_path, image_name, state_create, disk_size], stdout=subprocess.PIPE)
+    #output = proc.stdout.read() #Вывод запуска скрипта
+
+def create_combobox_create_ct():
+    global sel_image
+    combobox_var = StringVar()
+    combobox = ttk.Combobox(create_cont, values=list_cont, textvariable=combobox_var, state="readonly")
+    archive_btn.grid(row=3, column=0, columnspan=2, padx=15, sticky=W)
+    header_2.grid(row=4, column=0, columnspan=2, padx=10, sticky=W)
+    combobox.grid(row=2, column=0, padx=15, sticky=W)
+    sel_image = combobox.get()
 
 
 def click_btn5():
@@ -61,8 +97,8 @@ def click_btn5():
     info_cont.title("Information")
     info_cont.geometry("700x800+600+100")
     cont_name = cont_list.curselection() #Выбранный контейнер в списке
-    label = ttk.Label(text="Информация о контейнере", background="#FFFFFF")
-    label.grid(ipady=20, ipadx=20, padx=10,  pady=10, sticky=NSEW)
+    label_info = ttk.Label(info_cont, text="Информация о контейнере", background="#FFFFFF")
+    label_info.grid(ipady=20, ipadx=20, padx=10,  pady=10, sticky=NSEW)
 
 
 
@@ -74,14 +110,14 @@ def click_btn6():
     log_cont.geometry("700x800+600+100")
     log_var = " "
     log_list = log_var.split("\n")
-    label = ttk.Label(text="Логи контейнера", background="#FFFFFF")
+    label = ttk.Label(log_cont, text="Логи контейнера", background="#FFFFFF")
     label.grid(ipady=20, ipadx=20, padx=10,  pady=10, sticky=NSEW)
     while True:
         time.sleep(5)
         log_var = " "
         log_list2 = log_var.split("\n")
         log_list.append(log_list2[-1])
-        label = ttk.Label(text="Логи контейнера", background="#FFFFFF")
+        label = ttk.Label(log_cont, text="Логи контейнера", background="#FFFFFF")
         label.grid(ipady=20, ipadx=20, padx=10,  pady=10, sticky=NSEW)
 
         
