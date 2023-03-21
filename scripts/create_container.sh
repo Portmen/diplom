@@ -30,8 +30,11 @@ then
     echo "Ошибка! Укажите верный архив с файловой системой"
     exit 1   
   fi   
-else
+elif [[ "$state_create" == "image" ]]
+then
   machinectl start "$image_name"
-  exit 0
-fi  
+  exit 0  
+else
+  echo "Ошибка режима создания контейнера"
+  exit 1 
 
