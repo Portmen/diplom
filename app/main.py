@@ -49,25 +49,25 @@ def click_btn1():
     create_cont = Tk()
     create_cont.title("Create container")
     create_cont.geometry("700x800+600+100")
-    for r in range(5):
-        create_cont.rowconfigure(index=r, weight=1)
-    for c in range(2):
-        create_cont.columnconfigure(index=c, weight=1)
+    #for r in range(14):
+    #    create_cont.rowconfigure(index=r, weight=1)
+    #for c in range(2):
+    #    create_cont.columnconfigure(index=0, weight=1)
 
     state_list = ["archive", "image"]
     state = StringVar()
 
-    header_1 = ttk.Label(create_cont, text="Выберите способ создания:", font=12)
-    header_1.grid(row=0, column=0, columnspan=2, padx=10, sticky=W)
+    header_1 = ttk.Label(create_cont, text="Выберите способ создания:", font=("Arial", 10))
+    header_1.grid(row=0, column=0, columnspan=2, padx=5, pady=[25, 15], sticky=W)
 
-    image_btn = ttk.Radiobutton(create_cont, text="Создание контейнера из имеющихся образов", value=state_list[1], variable=state, command=create_combobox_create_ct, font=10)
-    image_btn.grid(row=1, column=0, columnspan=2, padx=15, sticky=W)
+    image_btn = ttk.Radiobutton(create_cont, text="Создание контейнера из имеющихся образов", value=state_list[1], variable=state, command=create_combobox_create_ct)
+    image_btn.grid(row=1, column=0, padx=10, pady=[0,10], sticky=W)
 
-    archive_btn = ttk.Radiobutton(create_cont, text="Создание контейнера из архива с ФС", value=state_list[0], variable=state, font=10)
-    archive_btn.grid(row=2, column=0, columnspan=2, padx=15, sticky=W)
+    archive_btn = ttk.Radiobutton(create_cont, text="Создание контейнера из архива с ФС", value=state_list[0], variable=state, command=create_entry_lable_create_ct)
+    archive_btn.grid(row=2, column=0, padx=10, pady=[0, 15], sticky=W)
 
-    header_2 = ttk.Label(create_cont, text="Укажите объём выделяемой памяти для контейнера:", font=12)
-    header_2.grid(row=3, column=0, columnspan=2, padx=10, sticky=W)
+    header_2 = ttk.Label(create_cont, text="Укажите объём выделяемой памяти для контейнера:", font=("Arial", 10))
+    header_2.grid(row=3, column=0, padx=5, columnspan=2, pady=[0,15], sticky=W)
 
     if state.get() == state_list[1]:
         state_create = state_list[1]
@@ -85,12 +85,16 @@ def click_btn1():
 def create_combobox_create_ct():
     global sel_image
     combobox_var = StringVar()
-    combobox = ttk.Combobox(create_cont, values=list_cont, textvariable=combobox_var, state="readonly")
-    archive_btn.grid(row=3, column=0, columnspan=2, padx=15, sticky=W)
-    header_2.grid(row=4, column=0, columnspan=2, padx=10, sticky=W)
-    combobox.grid(row=2, column=0, padx=15, sticky=W)
+    combobox = ttk.Combobox(create_cont, values=list_cont, textvariable=combobox_var, state="readonly", font=("Arial", 8))
+    combobox.grid(row=1, column=1, padx=[5,10], pady=[0, 10], sticky=W)
     sel_image = combobox.get()
 
+
+def create_entry_lable_create_ct():
+    entry_var = StringVar()
+    entry = ttk.Entry(create_cont, textvariable=entry_var)
+    
+    entry.grid(row=2, column=1, padx=[5,10], pady=[0, 15], sticky= W)
 
 def click_btn5():
     info_cont = Tk()
