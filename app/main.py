@@ -56,18 +56,22 @@ def click_btn1():
 
     state_list = ["archive", "image"]
     state = StringVar()
+    memory_var = StringVar()
 
     header_1 = ttk.Label(create_cont, text="Выберите способ создания:", font=("Arial", 10))
-    header_1.grid(row=0, column=0, columnspan=2, padx=5, pady=[25, 15], sticky=W)
+    header_1.grid(row=0, column=0, columnspan=2, padx=5, pady=[25, 25], sticky=W)
 
     image_btn = ttk.Radiobutton(create_cont, text="Создание контейнера из имеющихся образов", value=state_list[1], variable=state, command=create_combobox_create_ct)
     image_btn.grid(row=1, column=0, padx=10, pady=[0,10], sticky=W)
 
     archive_btn = ttk.Radiobutton(create_cont, text="Создание контейнера из архива с ФС", value=state_list[0], variable=state, command=create_entry_lable_create_ct)
-    archive_btn.grid(row=2, column=0, padx=10, pady=[0, 15], sticky=W)
+    archive_btn.grid(row=2, column=0, padx=10, pady=[0, 25], sticky=W)
 
-    header_2 = ttk.Label(create_cont, text="Укажите объём выделяемой памяти для контейнера:", font=("Arial", 10))
-    header_2.grid(row=3, column=0, padx=5, columnspan=2, pady=[0,15], sticky=W)
+    header_2 = ttk.Label(create_cont, text="Укажите объём выделяемой памяти для контейнера (Мб):", font=("Arial", 10))
+    header_2.grid(row=3, column=0, padx=5, columnspan=2, pady=[0,25], sticky=W)
+
+    memory_entry = ttk.Entry(create_cont, textvariable=memory_var, width=25)
+    memory_entry.grid(row=4, column=0, padx=10, pady=[0, 15], sticky=W)
 
     if state.get() == state_list[1]:
         state_create = state_list[1]
@@ -85,16 +89,17 @@ def click_btn1():
 def create_combobox_create_ct():
     global sel_image
     combobox_var = StringVar()
-    combobox = ttk.Combobox(create_cont, values=list_cont, textvariable=combobox_var, state="readonly", font=("Arial", 8))
+    combobox = ttk.Combobox(create_cont, values=list_cont, textvariable=combobox_var, state="readonly", font=("Arial", 8), width=30)
     combobox.grid(row=1, column=1, padx=[5,10], pady=[0, 10], sticky=W)
     sel_image = combobox.get()
 
 
 def create_entry_lable_create_ct():
+    global entry_var
     entry_var = StringVar()
-    entry = ttk.Entry(create_cont, textvariable=entry_var)
+    entry = ttk.Entry(create_cont, textvariable=entry_var, width= 50)
     
-    entry.grid(row=2, column=1, padx=[5,10], pady=[0, 15], sticky= W)
+    entry.grid(row=2, column=1, columnspan=2, padx=[5,10], pady=[0, 15], sticky= W)
 
 def click_btn5():
     info_cont = Tk()
