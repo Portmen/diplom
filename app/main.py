@@ -1,9 +1,12 @@
 import time
 #import subprocess
+import tkinter.filedialog
+import re
 from tkinter import *
 from tkinter import ttk
 from os import listdir, system
 from os.path import isdir, join
+
 
 
 
@@ -35,8 +38,8 @@ def create_btn(state_btn):
 
 
 def reset_list_cont():
-    list_cont = [cont for cont in listdir(PATH) if isdir(join(PATH, cont))]
-    list_cont_var = StringVar(value=list_cont)
+    #list_cont = [cont for cont in listdir(PATH) if isdir(join(PATH, cont))]
+    #list_cont_var = StringVar(value=list_cont)
     cont_list = Listbox(listvariable=list_cont_var, font=8, bd=3)
     cont_list.grid(row=1, rowspan=9, column=1, pady=[
                    50, 10], padx=[10, 30], sticky=NSEW)
@@ -66,7 +69,7 @@ def click_btn1():
     image_btn = ttk.Radiobutton(create_cont, text="Создание контейнера из имеющихся образов", value=state_list[1], variable=state, command=create_combobox_create_ct)
     image_btn.grid(row=1, column=0, padx=10, pady=[0,10], sticky=W)
 
-    archive_btn = ttk.Radiobutton(create_cont, text="Создание контейнера из архива с ФС", value=state_list[0], variable=state, command=create_entry_lable_create_ct)
+    archive_btn = ttk.Radiobutton(create_cont, text="Создание контейнера из архива с ФС", value=state_list[0], variable=state, command=create_path_create_ct)
     archive_btn.grid(row=2, column=0, padx=10, pady=[0, 25], sticky=W)
 
     header_2 = ttk.Label(create_cont, text="Укажите объём выделяемой оперативной памяти для контейнера(Гб):", font=("Arial", 10))
@@ -95,10 +98,28 @@ def click_btn1():
     #output = proc.stdout.read() #Вывод запуска скрипта
 
 def create_ip_create_ct():
-    global ip_variable
-    ip_variable = StringVar()
-    ip_entry = ttk.Entry(create_cont, textvariable=ip_variable, width=18)  #Настроить проверку корректности
-    ip_entry.grid(row=6, column=1, padx=5, pady=[0,15], sticky=W)    
+    global ip_entry, message_fail
+    ip_entry = ttk.Entry(create_cont, width=18)  #Настроить проверку корректности
+    ip_entry.grid(row=6, column=1, padx=5, pady=[0,15], sticky=W)
+    message_fail = ttk.Label(create_cont, text="A")
+    message_fail.grid(row=6, column=2, padx=5, pady=[0, 15], sticky=W)
+    message_fail_ip()   #Сделать проверку в реальном времени
+  
+
+def message_fail_ip():
+    if validate_ip():
+        message_fail.config(text="Ок")
+    else:
+        message_fail.config(text="Неверно: xxx.xxx.xxx.xxx/xx")
+
+
+def validate_ip():
+    pattern = r"^(\d{1,3}\.){3}\d{1,3}/\d{1,2}$"
+    ip_addr = ip_entry.get()
+    if re.match(pattern, ip_addr):
+        return True
+    else:
+        return False
 
 def create_scale_create_ct():
     global num_cpu
@@ -112,17 +133,29 @@ def create_scale_create_ct():
 def create_combobox_create_ct():
     global sel_image
     combobox_var = StringVar()
-    combobox = ttk.Combobox(create_cont, values=list_cont, textvariable=combobox_var, state="readonly", font=("Arial", 8), width=30)
+    combobox = ttk.Combobox(create_cont, textvariable=combobox_var, state="readonly", font=("Arial", 8), width=30)  # Для Win
+    #combobox = ttk.Combobox(create_cont, values=list_cont, textvariable=combobox_var, state="readonly", font=("Arial", 8), width=30) #Для Linux
     combobox.grid(row=1, column=1, padx=[5,10], pady=[0, 10], sticky=W)
     sel_image = combobox.get()
 
 
-def create_entry_lable_create_ct():
-    global entry_var
-    entry_var = StringVar()
-    entry = ttk.Entry(create_cont, textvariable=entry_var, width=30) #проверку добавить
+def create_path_create_ct():
+    btn_path = ttk.Button(create_cont, text="Выбрать", command=open_path)
+    btn_path.grid(row=2, column=1, padx=[5, 10], pady=[0,25], sticky=W)
+
+    #entry = ttk.Entry(create_cont, textvariable=entry_var, width=30) #проверку добавить
+    #entry.grid(row=2, column=1, columnspan=2, padx=[5,10], pady=[0, 25], sticky= W)
+
+def open_path():
+    global path_file
+    path_file = tkinter.filedialog.askopenfilename()
+    show_path()
     
-    entry.grid(row=2, column=1, columnspan=2, padx=[5,10], pady=[0, 25], sticky= W)
+
+def show_path():
+    path_label = ttk.Label(create_cont, text=path_file)
+    path_label.grid(row=2, column=2, padx=[5, 10], pady=[0, 25], sticky=W)
+
 
 def click_btn5():
     info_cont = Tk()
@@ -193,8 +226,9 @@ if __name__ == "__main__":
         else:
             app.columnconfigure(index=c, weight=8)
 
-    list_cont = [cont for cont in listdir(PATH) if isdir(join(PATH, cont))]
-    list_cont_var = StringVar(value=list_cont)
+    #list_cont = [cont for cont in listdir(PATH) if isdir(join(PATH, cont))]  #Раскоментить для Linux
+    #list_cont_var = StringVar(value=list_cont)
+    list_cont_var = StringVar()    # Для Win
     cont_list = Listbox(listvariable=list_cont_var, font=8, bd=3)
     cont_list.grid(row=1, rowspan=9, column=1, pady=[
                    50, 10], padx=[10, 30], sticky=NSEW)
