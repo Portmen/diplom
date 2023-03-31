@@ -7,7 +7,7 @@ from os.path import isdir, join
 
 
 
-def craete_btn(state_btn):
+def create_btn(state_btn):
     global btn_1,  btn_2, btn_3, btn_4, btn_5, btn_6, btn_7, btn_8, btn_9
     btn_1 = ttk.Button(text="Создать контейнер", command=click_btn1)
     btn_2 = ttk.Button(text="Запуск",  state=state_btn)
@@ -57,6 +57,8 @@ def click_btn1():
     state_list = ["archive", "image"]
     state = StringVar()
     memory_var = StringVar()
+    cpu_var = IntVar()
+    ip_var = IntVar()
 
     header_1 = ttk.Label(create_cont, text="Выберите способ создания:", font=("Arial", 10))
     header_1.grid(row=0, column=0, columnspan=2, padx=5, pady=[25, 25], sticky=W)
@@ -67,11 +69,17 @@ def click_btn1():
     archive_btn = ttk.Radiobutton(create_cont, text="Создание контейнера из архива с ФС", value=state_list[0], variable=state, command=create_entry_lable_create_ct)
     archive_btn.grid(row=2, column=0, padx=10, pady=[0, 25], sticky=W)
 
-    header_2 = ttk.Label(create_cont, text="Укажите объём выделяемой памяти для контейнера (Мб):", font=("Arial", 10))
+    header_2 = ttk.Label(create_cont, text="Укажите объём выделяемой оперативной памяти для контейнера(Гб):", font=("Arial", 10))
     header_2.grid(row=3, column=0, padx=5, columnspan=2, pady=[0,25], sticky=W)
 
     memory_entry = ttk.Entry(create_cont, textvariable=memory_var, width=25)
     memory_entry.grid(row=4, column=0, padx=10, pady=[0, 15], sticky=W)
+
+    cpu_checkbtn = ttk.Checkbutton(create_cont, text="Ограничить число виртуальных ядер", variable=cpu_var, command=create_scale_create_ct)
+    cpu_checkbtn.grid(row=5, column=0, padx=5, pady=[10, 5], sticky=W)
+    
+    ip_checkbtn = ttk.Checkbutton(create_cont, text="Ограничить диапозон ip адресов", variable=ip_var, command=create_ip_create_ct)
+    ip_checkbtn.grid(row=6, column=0, padx=5, pady=[0, 15], sticky=W)
 
     if state.get() == state_list[1]:
         state_create = state_list[1]
@@ -86,6 +94,21 @@ def click_btn1():
     #proc = subprocess.Popen([archive_path, image_name, state_create, disk_size], stdout=subprocess.PIPE)
     #output = proc.stdout.read() #Вывод запуска скрипта
 
+def create_ip_create_ct():
+    global ip_variable
+    ip_variable = StringVar()
+    ip_entry = ttk.Entry(create_cont, textvariable=ip_variable, width=18)  #Настроить проверку корректности
+    ip_entry.grid(row=6, column=1, padx=5, pady=[0,15], sticky=W)    
+
+def create_scale_create_ct():
+    global num_cpu
+    num_cpu = IntVar(value=1)
+    scale_cpu = ttk.Scale(create_cont, orient="horizontal", length=200, from_=1, to=8, variable=num_cpu)
+    cpu_label = ttk.Label(create_cont, textvariable=num_cpu)
+    cpu_label.grid(row=5, column=2, padx=[0, 3], pady=[10, 5], sticky=W) #??? отображение
+    scale_cpu.grid(row=5, column=1, padx=[5, 0], pady=[10, 5], sticky=W)
+
+
 def create_combobox_create_ct():
     global sel_image
     combobox_var = StringVar()
@@ -97,9 +120,9 @@ def create_combobox_create_ct():
 def create_entry_lable_create_ct():
     global entry_var
     entry_var = StringVar()
-    entry = ttk.Entry(create_cont, textvariable=entry_var, width= 50)
+    entry = ttk.Entry(create_cont, textvariable=entry_var, width=30) #проверку добавить
     
-    entry.grid(row=2, column=1, columnspan=2, padx=[5,10], pady=[0, 15], sticky= W)
+    entry.grid(row=2, column=1, columnspan=2, padx=[5,10], pady=[0, 25], sticky= W)
 
 def click_btn5():
     info_cont = Tk()
@@ -147,7 +170,7 @@ def click_btn8():
 
 
 def change_state_btn(event):
-    craete_btn("enable")
+    create_btn("enable")
 
 
 if __name__ == "__main__":
@@ -159,7 +182,7 @@ if __name__ == "__main__":
 
     #icon =  PhotoImage(file="./icon.png")
     #app.iconphoto(False, icon)
-    craete_btn(state_btn)
+    create_btn(state_btn)
 
     #btn.bind("<Enter>", create_container)
     for r in range(11):

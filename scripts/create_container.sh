@@ -38,3 +38,4 @@ else
   echo "Ошибка режима создания контейнера"
   exit 1 
 
+machinectl set-limit "$image_name" MemoryMax=
