@@ -2,6 +2,9 @@ archive_path=$1
 image_name=$2
 state_create=$3
 disk_size=$4
+memory_max=$5
+cpu_shares=$6
+ip_addres_allow=$7
 
 
 if [[ "$state_create" == "archive" ]]
@@ -38,4 +41,6 @@ else
   echo "Ошибка режима создания контейнера"
   exit 1 
 
-machinectl set-limit "$image_name" MemoryMax=
+machinectl set-limit "$image_name" MemoryMax="{$memory_max}G"
+machinectl set-limit "$image_name" CPUShares="$((cpu_shares * 1024))"
+machinectl set-limit "$image_name" IPAddressAllow="$ip_addres_allow"
