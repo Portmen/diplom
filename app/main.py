@@ -7,8 +7,11 @@ from tkinter import ttk
 from os import listdir, system
 from os.path import isdir, join
 
-
-
+'''
+*********************************************************
+***************ФУНКЦИИ ГЛАВНОГО ОКНА*********************
+*********************************************************
+'''
 
 def create_btn(state_btn):
     global btn_1,  btn_2, btn_3, btn_4, btn_5, btn_6, btn_7, btn_8, btn_9
@@ -45,6 +48,17 @@ def reset_list_cont():
                    50, 10], padx=[10, 30], sticky=NSEW)
     cont_list.bind("<<ListboxSelect>>", change_state_btn)
     cont_list.yview_scroll(number=1, what="units")
+
+
+def change_state_btn(event):
+    create_btn("enable")
+
+
+'''
+***********************************************************
+*************ФУНКЦИИ ОКНА СОЗДАНИЯ КОНТЕЙНЕРА**************
+***********************************************************
+'''
 
 #Разобраться с отображением
 def click_btn1():
@@ -158,6 +172,13 @@ def show_path():
     path_label = ttk.Label(create_cont, text=path_file)
     path_label.grid(row=2, column=2, padx=[5, 10], pady=[0, 25], sticky=W)
 
+'''
+************************************************************
+**********ФУНКЦИИ ОКНА ИНФОРМАЦИИ О КОНТЕЙНЕРЕ**************
+************************************************************
+'''
+
+
 
 def click_btn5():
     info_cont = Tk()
@@ -168,6 +189,11 @@ def click_btn5():
     label_info.grid(ipady=20, ipadx=20, padx=10,  pady=10, sticky=NSEW)
 
 
+'''
+************************************************************
+*************ФУНКЦИИ ОКНА ЛОГОВ КОНТЕЙНЕРА******************
+************************************************************
+'''
 
 #Разобраться с выводом логов и их обновлением в реальном времени
 
@@ -192,20 +218,28 @@ def click_btn6():
     #logs_list = system("")
 
 
+'''
+************************************************************
+********ФУНКЦИИ ОКНА УПРАВЛЕНИЯ РЕСУРСАМИ КОНТЕЙНЕРА********
+************************************************************
+'''
+
 def click_btn7():
     control_resourses = Tk()
     control_resourses.title("Control resourses")
     control_resourses.geometry("700x800+600+100")
 
 
+'''
+************************************************************
+***************ФУНКЦИИ ОКНА КОНСОЛИ КОНТЕЙНЕРА**************
+************************************************************
+'''
+
 def click_btn8():
     console_cont = Tk()
     console_cont.title("Console container")
     console_cont.geometry("700x800+600+100")
-
-
-def change_state_btn(event):
-    create_btn("enable")
 
 
 if __name__ == "__main__":
