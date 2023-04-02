@@ -99,24 +99,26 @@ def click_btn1():
 
 def create_ip_create_ct():
     global ip_entry, message_fail
-    ip_entry = ttk.Entry(create_cont, width=18)  #Настроить проверку корректности
+    ip_entry = ttk.Entry(create_cont, width=18, validate="focusout", validatecommand=message_fail_ip)  #Настроить проверку корректности
     ip_entry.grid(row=6, column=1, padx=5, pady=[0,15], sticky=W)
-    message_fail = ttk.Label(create_cont, text="A")
-    message_fail.grid(row=6, column=2, padx=5, pady=[0, 15], sticky=W)
-    message_fail_ip()   #Сделать проверку в реальном времени
+    message_fail = ttk.Label(create_cont, text="Пример: 192.168.1.0/24")
+    message_fail.grid(row=6, column=2, padx=5, pady=[0, 15], sticky=W)   #Сделать проверку в реальном времени
   
 
 def message_fail_ip():
-    if validate_ip():
-        message_fail.config(text="Ок")
-    else:
-        message_fail.config(text="Неверно: xxx.xxx.xxx.xxx/xx")
-
-
-def validate_ip():
-    pattern = r"^(\d{1,3}\.){3}\d{1,3}/\d{1,2}$"
+    global ip_addr
     ip_addr = ip_entry.get()
-    if re.match(pattern, ip_addr):
+    if validate_ip(ip_addr):
+        message_fail.config(text="Ок", foreground="green")
+        return True
+    else:
+        message_fail.config(text="Неверно: xxx.xxx.xxx.xxx/xx", foreground="red")
+        return False
+
+
+def validate_ip(ip):
+    pattern = r"^(\d{1,3}\.){3}\d{1,3}/\d{1,2}$"
+    if re.match(pattern, ip):
         return True
     else:
         return False
