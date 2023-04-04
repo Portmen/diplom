@@ -1,6 +1,6 @@
 import time
-#import subprocess       #Для Linux
-#import multiprocessing  #Для Linux 
+import subprocess       #Для Linux
+import multiprocessing  #Для Linux 
 import tkinter.filedialog
 import re
 from tkinter import *
@@ -61,16 +61,13 @@ def change_state_btn(event):
 ***********************************************************
 '''
 
-#Разобраться с отображением
+
 def click_btn1():
     global create_cont, archive_btn, header_2, memory_var, memmory_label
     create_cont = Tk()
     create_cont.title("Create container")
     create_cont.geometry("700x800+600+100")
-    #for r in range(14):
-    #    create_cont.rowconfigure(index=r, weight=1)
-    #for c in range(2):
-    #    create_cont.columnconfigure(index=0, weight=1)
+    
 
     state_list = ["archive", "image"]
     state = StringVar()
@@ -108,7 +105,7 @@ def click_btn1():
     ip_checkbtn = ttk.Checkbutton(create_cont, text="Ограничить диапозон ip адресов", variable=ip_var, command=create_ip_create_ct)
     ip_checkbtn.grid(row=6, column=0, padx=5, pady=[0, 5], sticky=W)
 
-    process_checkbtn = ttk.Checkbutton(create_cont, text="Ограничиить максимальное число процессов в контейнере", variable=process_var, command=create_spinbox2_create_ct)
+    process_checkbtn = ttk.Checkbutton(create_cont, text="Ограничить максимальное число процессов в контейнере", variable=process_var, command=create_spinbox2_create_ct)
     process_checkbtn.grid(row=7, column=0, padx=5, pady=[0, 15], sticky=W)
 
     if state.get() == state_list[1]:
@@ -123,15 +120,16 @@ def click_btn1():
     disk_size = ""
     #proc = subprocess.Popen([archive_path, image_name, state_create, disk_size], stdout=subprocess.PIPE)
     #output = proc.stdout.read() #Вывод запуска скрипта
-'''   Для Linux
+'''   Для Linux '''
 def total_memmory():
     full_memmory = subprocess.run(["free", "-b"], stdout=subprocess.PIPE).stdout.decode("utf-8")
-    print(full_memmory)
+    list_memmory = full_memmory.split()
+    return float (list_memmory[7])
 
 def total_kernels():
     total = multiprocessing.cpu_count()
     return total     
-'''
+''''''
 
 def change_label_memmory(newVal):
     int_var = str(round(float(newVal)))
@@ -215,13 +213,24 @@ def show_path():
 
 
 def click_btn5():
+    global cont_name
     info_cont = Tk()
     info_cont.title("Information")
     info_cont.geometry("700x800+600+100")
+    
+    info_cont.rowconfigure(index=0, weight=1)
+    info_cont.columnconfigure(index=0, weight=1)
+
+    
     cont_name = cont_list.curselection() #Выбранный контейнер в списке
-    label_info = ttk.Label(info_cont, text="Информация о контейнере", background="#FFFFFF")
+    info_var = info_conteiner()
+
+    label_info = ttk.Label(info_cont, textvariable=info_var, background="#FFFFFF")
     label_info.grid(ipady=20, ipadx=20, padx=10,  pady=10, sticky=NSEW)
 
+def info_conteiner():
+    full_info = subprocess.run(['muchinectl', 'status', cont_name], stdout=subprocess.PIPE).stdout.decode("utf-8")
+    return full_info    
 
 '''
 ************************************************************
@@ -282,6 +291,8 @@ if __name__ == "__main__":
     app.geometry("1200x800+350+80")
     PATH = '/var/lib/machines/'
     state_btn = "disable"
+    print(total_memmory())
+    
 
     #icon =  PhotoImage(file="./icon.png")
     #app.iconphoto(False, icon)
