@@ -42,6 +42,7 @@ def create_btn(state_btn):
 
 
 def reset_list_cont():
+    global tree
     list_cont = subprocess.run(["machinectl", "list"], stdout=subprocess.PIPE).stdout.decode("utf-8").split()
     head_treev = ("machines", "class", "service", "os", "version", "addresses")
     tree = ttk.Treeview(columns=head_treev, show="headings")
@@ -248,23 +249,24 @@ def click_btn5():
     global cont_name
     info_cont = Tk()
     info_cont.title("Information")
-    info_cont.geometry("700x800+600+100")
+    info_cont.geometry("700x450+600+100")
     
     info_cont.rowconfigure(index=0, weight=1)
     info_cont.columnconfigure(index=0, weight=1)
 
     
-    cont_name = cont_list.curselection() #Выбранный контейнер в списке
-    print(cont_name)
-    print(type(cont_name))
-    info_var = info_container()
+    cont_id = tree.selection()  #id выбранного контейнера
+    item = tree.item(cont_id)
+    cont_name = item["values"][0] #имя выбранного контейнера
     
+    info_var = info_container()
+    print(info_var)
 
-    label_info = ttk.Label(info_cont, textvariable=info_var, background="#FFFFFF")
+    label_info = ttk.Label(info_cont, text=info_var, background="#FFFFFF", anchor=NW, padding=5)
     label_info.grid(ipady=20, ipadx=20, padx=10,  pady=10, sticky=NSEW)
 
 def info_container():
-    full_info = subprocess.run(['muchinectl', 'status', cont_name], stdout=subprocess.PIPE).stdout.decode("utf-8")
+    full_info = subprocess.run(['machinectl', 'status', cont_name], stdout=subprocess.PIPE).stdout.decode("utf-8")
     return full_info    
 
 '''
