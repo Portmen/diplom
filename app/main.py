@@ -42,18 +42,45 @@ def create_btn(state_btn):
 
 
 def reset_list_cont():
-    #list_cont = [cont for cont in listdir(PATH) if isdir(join(PATH, cont))]
-    #list_cont_var = StringVar(value=list_cont)
-    cont_list = Listbox(listvariable=list_cont_var, font=8, bd=3)
-    cont_list.grid(row=1, rowspan=9, column=1, pady=[
+    list_cont = subprocess.run(["machinectl", "list"], stdout=subprocess.PIPE).stdout.decode("utf-8").split()
+    head_treev = ("machines", "class", "service", "os", "version", "addresses")
+    tree = ttk.Treeview(columns=head_treev, show="headings")
+    tree.grid(row=1, rowspan=9, column=1, pady=[
                    50, 10], padx=[10, 30], sticky=NSEW)
-    cont_list.bind("<<ListboxSelect>>", change_state_btn)
-    cont_list.yview_scroll(number=1, what="units")
+    for i in head_treev:
+        tree.heading(i, text=i)
+    if len(list_cont) > 2:
+        add_list = []
+        count = 0
+        for i in range(6, len(list_cont)):
+            count += 1
+            if count == 6:
+                if validate_list_cont(list_cont[i]):
+                    add_list.append(list_cont[i])
+                    tree.insert("", END, values=add_list)
+                    count = 0
+                    add_list.clear()
+                else:
+                    tree.insert("", END, values=add_list)
+                    count = 0
+                    add_list.clear()
+                    count += 1
+                    add_list.append(list_cont[i])                       
+            elif count < 6:
+                add_list.append(list_cont[i])
+    tree.bind("<<TreeviewSelect>>", change_state_btn)       
+
+
 
 
 def change_state_btn(event):
     create_btn("enable")
 
+def validate_list_cont(ip):
+    if validate_ip(ip):
+        return True
+    else:
+        return False
 
 '''
 ***********************************************************
@@ -86,7 +113,7 @@ def click_btn1():
     archive_btn.grid(row=2, column=0, padx=10, pady=[0, 25], sticky=W)
 
     header_2 = ttk.Label(create_cont, text="Укажите объём выделяемой оперативной памяти для контейнера(DEFAULT=512МБ):", font=("Arial", 10))
-    header_2.grid(row=3, column=0, padx=5, pady=[0,25], sticky=W)
+    header_2.grid(row=3, column=0, columnspan=3, padx=5, pady=[0,25], sticky=W)
     
 
     #tot_memmory = total_memmory()   #TEST
@@ -180,9 +207,14 @@ def create_spinbox2_create_ct():
 
 def create_combobox_create_ct():
     global sel_image
+    list_images_cmd = subprocess.run(["machinectl", "list-images"], stdout=subprocess.PIPE).stdout.decode("utf-8").split()
+    list_img = []
+    for i in range( 6, len(list_images_cmd) - 3, 6):
+        list_img.append(list_images_cmd[i])
+
     combobox_var = StringVar()
-    combobox = ttk.Combobox(create_cont, textvariable=combobox_var, state="readonly", font=("Arial", 8), width=30)  # Для Win
-    #combobox = ttk.Combobox(create_cont, values=list_cont, textvariable=combobox_var, state="readonly", font=("Arial", 8), width=30) #Для Linux
+    #combobox = ttk.Combobox(create_cont, textvariable=combobox_var, state="readonly", font=("Arial", 8), width=20)  # Для Win
+    combobox = ttk.Combobox(create_cont, values=list_img, textvariable=combobox_var, state="readonly", font=("Arial", 8), width=20) #Для Linux
     combobox.grid(row=1, column=1, padx=[5,10], pady=[0, 10], sticky=W)
     sel_image = combobox.get()
 
@@ -223,12 +255,15 @@ def click_btn5():
 
     
     cont_name = cont_list.curselection() #Выбранный контейнер в списке
-    info_var = info_conteiner()
+    print(cont_name)
+    print(type(cont_name))
+    info_var = info_container()
+    
 
     label_info = ttk.Label(info_cont, textvariable=info_var, background="#FFFFFF")
     label_info.grid(ipady=20, ipadx=20, padx=10,  pady=10, sticky=NSEW)
 
-def info_conteiner():
+def info_container():
     full_info = subprocess.run(['muchinectl', 'status', cont_name], stdout=subprocess.PIPE).stdout.decode("utf-8")
     return full_info    
 
@@ -294,8 +329,8 @@ if __name__ == "__main__":
     print(total_memmory())
     
 
-    #icon =  PhotoImage(file="./icon.png")
-    #app.iconphoto(False, icon)
+    icon = PhotoImage(file = "icon.png")
+    app.iconphoto(True, icon)
     create_btn(state_btn)
 
     #btn.bind("<Enter>", create_container)
@@ -307,13 +342,7 @@ if __name__ == "__main__":
         else:
             app.columnconfigure(index=c, weight=8)
 
-    #list_cont = [cont for cont in listdir(PATH) if isdir(join(PATH, cont))]  #Раскоментить для Linux
-    #list_cont_var = StringVar(value=list_cont)
-    list_cont_var = StringVar()    # Для Win
-    cont_list = Listbox(listvariable=list_cont_var, font=8, bd=3)
-    cont_list.grid(row=1, rowspan=9, column=1, pady=[
-                   50, 10], padx=[10, 30], sticky=NSEW)
-    cont_list.bind("<<ListboxSelect>>", change_state_btn)
-    cont_list.yview_scroll(number=1, what="units")
+    reset_list_cont()
+        
 
     app.mainloop()
