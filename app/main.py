@@ -72,7 +72,11 @@ def reset_list_cont():
     tree.bind("<<TreeviewSelect>>", change_state_btn)       
 
 
-
+def get_name_cont():
+    cont_id = tree.selection()  #id выбранного контейнера
+    item = tree.item(cont_id)
+    cont_name = item["values"][0]
+    return cont_name
 
 def change_state_btn(event):
     create_btn("enable")
@@ -254,16 +258,13 @@ def click_btn5():
     info_cont.rowconfigure(index=0, weight=1)
     info_cont.columnconfigure(index=0, weight=1)
 
-    
-    cont_id = tree.selection()  #id выбранного контейнера
-    item = tree.item(cont_id)
-    cont_name = item["values"][0] #имя выбранного контейнера
-    
+    cont_name = get_name_cont()
     info_var = info_container()
-    print(info_var)
+
 
     label_info = ttk.Label(info_cont, text=info_var, background="#FFFFFF", anchor=NW, padding=5)
     label_info.grid(ipady=20, ipadx=20, padx=10,  pady=10, sticky=NSEW)
+    
 
 def info_container():
     full_info = subprocess.run(['machinectl', 'status', cont_name], stdout=subprocess.PIPE).stdout.decode("utf-8")
