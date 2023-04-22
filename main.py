@@ -183,7 +183,7 @@ if __name__ == "__main__":
     print(total_memmory())
     
 
-    icon = PhotoImage(file = "icon.png")
+    icon = PhotoImage(file = "./icon/icon.png")
     app.iconphoto(True, icon)
     
 

@@ -11,7 +11,7 @@ if [[ "$state_create" == "archive" ]]
 then
   if [[ -f "$archive_path" && ( $archive_path == *.tar.xz || $archive_path == *.raw ) ]]
   then
-    cp "$archive_path" "../images-archive/"
+    cp "$archive_path" "./images-archive/"
     
     if [[ $archive_path == *.tar.xz ]]
     then
