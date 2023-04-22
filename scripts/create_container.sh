@@ -18,7 +18,7 @@ then
       cp "$archive_path" "/var/lib/machines/$image_name.tar.xz"
       machinectl import-tar "/var/lib/machines/$image_name.tar.xz" "$image_name"
       machinectl start $image_name
-      exit 0
+      
     fi
 
     if [[ $archive_path == *.raw ]]
@@ -26,7 +26,7 @@ then
       cp "$archive_path" "/var/lib/machines/$image_name.raw"
       machinectl import-raw "var/lib/machines/$image_name.raw" "$image_name"
       machinectl start "$image_name"
-      exit 0
+      
     fi    
 
   else
@@ -36,11 +36,27 @@ then
 elif [[ "$state_create" == "image" ]]
 then
   machinectl start "$image_name"
-  exit 0  
+    
 else
   echo "Ошибка режима создания контейнера"
   exit 1 
 
-machinectl set-limit "$image_name" MemoryMax="{$memory_max}G"
-machinectl set-limit "$image_name" CPUShares="$((cpu_shares * 1024))"
-machinectl set-limit "$image_name" IPAddressAllow="$ip_addres_allow"
+if [[ -n "$memory_max" && -n "$cpu_shares" && -n "$ip_addres_allow"]]
+then
+  machinectl set-limit "$image_name" MemoryMax="{$memory_max}G"
+  machinectl set-limit "$image_name" CPUShares="$((cpu_shares * 1024))"
+  exit 0
+  machinectl set-limit "$image_name" IPAddressAllow="$ip_addres_allow"
+elif [[ -n "$memory_max" && -n "$cpu_shares" ]]
+then
+  machinectl set-limit "$image_name" MemoryMax="{$memory_max}G"
+  machinectl set-limit "$image_name" CPUShares="$((cpu_shares * 1024))"
+  exit 0
+elif [[ -n "$memory_max" && -n "$ip_addres_allow" ]]
+then
+  machinectl set-limit "$image_name" MemoryMax="{$memory_max}G"
+  machinectl set-limit "$image_name" IPAddressAllow="$ip_addres_allow"
+  exit 0
+else
+  machinectl set-limit "$image_name" MemoryMax="{$memory_max}G"
+  exit 0   
