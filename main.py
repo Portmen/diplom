@@ -177,7 +177,7 @@ def click_btn8():
 if __name__ == "__main__":
     app = Tk()
     app.title('ContainerAPP')
-    app.geometry("1200x800+350+80")
+    app.geometry("1400x800+350+80")
     PATH = '/var/lib/machines/'
     state_btn = "disable"
     print(total_memmory())

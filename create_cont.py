@@ -7,33 +7,32 @@ import tkinter.filedialog
 
 
 
+
 def click_btn1():
-    global create_cont, archive_btn, header_2, memory_var, memmory_label
+    global create_cont, archive_btn, header_2, memory_var, memmory_label, create_btn, state, image_btn
     create_cont = Tk()
     create_cont.title("Create container")
-    create_cont.geometry("700x800+600+100")
+    create_cont.geometry("815x450+600+100")
     
 
-    state_list = ["archive", "image"]
-    state = StringVar()
-    memory_var = IntVar(value=512.0)
-    cpu_var = IntVar()
-    ip_var = IntVar()
-    process_var = IntVar()
-
+    state_1 = "image"
+    state_2 = "archive"
+    
+    
     header_1 = ttk.Label(create_cont, text="Выберите способ создания:", font=("Arial", 10))
     header_1.grid(row=0, column=0, columnspan=2, padx=5, pady=[25, 25], sticky=W)
-
-    image_btn = ttk.Radiobutton(create_cont, text="Создание контейнера из имеющихся образов", value=state_list[1], variable=state, command=create_combobox_create_ct)
+    
+    state = StringVar(create_cont)
+    image_btn = ttk.Radiobutton(create_cont, text="Создание контейнера из имеющихся образов", value=state_1, variable=state, command=create_combobox_create_ct)
     image_btn.grid(row=1, column=0, padx=10, pady=[0,10], sticky=W)
 
-    archive_btn = ttk.Radiobutton(create_cont, text="Создание контейнера из архива с ФС", value=state_list[0], variable=state, command=create_path_create_ct)
+    archive_btn = ttk.Radiobutton(create_cont, text="Создание контейнера из архива с ФС", value=state_2, variable=state, command=create_path_create_ct)
     archive_btn.grid(row=2, column=0, padx=10, pady=[0, 25], sticky=W)
 
     header_2 = ttk.Label(create_cont, text="Укажите объём выделяемой оперативной памяти для контейнера(DEFAULT=512МБ):", font=("Arial", 10))
     header_2.grid(row=3, column=0, columnspan=3, padx=5, pady=[0,25], sticky=W)
     
-
+    memory_var = IntVar(create_cont, value=512)
     #tot_memmory = total_memmory()   #TEST
     memmory_scale = ttk.Scale(create_cont, orient="horizontal", length=300, from_=512.0, to=5000.0, variable=memory_var, command=change_label_memmory)
     #memmory_scale.configure(to=tot_memmory)
@@ -43,28 +42,36 @@ def click_btn1():
 
     #memory_entry = ttk.Entry(create_cont, textvariable=memory_var, width=25)
     #memory_entry.grid(row=4, column=0, padx=10, pady=[0, 15], sticky=W)
-
+    cpu_var = IntVar(create_cont)
     cpu_checkbtn = ttk.Checkbutton(create_cont, text="Ограничить число виртуальных ядер", variable=cpu_var, command=create_spinbox1_create_ct)
     cpu_checkbtn.grid(row=5, column=0, padx=5, pady=[10, 5], sticky=W)
     
+    ip_var = IntVar(create_cont)
     ip_checkbtn = ttk.Checkbutton(create_cont, text="Ограничить диапозон ip адресов", variable=ip_var, command=create_ip_create_ct)
     ip_checkbtn.grid(row=6, column=0, padx=5, pady=[0, 5], sticky=W)
-
+    
+    process_var = IntVar(create_cont)
     process_checkbtn = ttk.Checkbutton(create_cont, text="Ограничить максимальное число процессов в контейнере", variable=process_var, command=create_spinbox2_create_ct)
     process_checkbtn.grid(row=7, column=0, padx=5, pady=[0, 15], sticky=W)
 
-    if state.get() == state_list[1]:
-        state_create = state_list[1]
-        image_name = sel_image
-
-    elif state.get() == state_list[0]:
-        state_create = state_list[0]    
+    create_btn = ttk.Button(create_cont, text="Создать", state="disable", command=create_container)
+    create_btn.grid(row=8, column=2, padx=5, pady=[70, 0], sticky=SE)
 
     archive_path = ""
     image_name = ""
     disk_size = ""
     #proc = subprocess.Popen([archive_path, image_name, state_create, disk_size], stdout=subprocess.PIPE)
     #output = proc.stdout.read() #Вывод запуска скрипта
+    create_cont.mainloop()
+
+def create_container():
+     if state.get() == "image":
+        image_name = combobox.get()
+        subprocess.run(["machinectl", "start", image_name])
+     elif state.get() == "archive":
+        state_create = "archive"
+
+
 '''   Для Linux '''
 def total_memmory():
     full_memmory = subprocess.run(["free", "-b"], stdout=subprocess.PIPE).stdout.decode("utf-8")
@@ -109,32 +116,59 @@ def validate_ip(ip):
         return False
 
 def create_spinbox1_create_ct():
-    global spinbox_var1
-    #total = total_kernels()      #TEST
-    spinbox_var1 = StringVar(value=1.0)
-    spinbox_kernel = ttk.Spinbox(create_cont, from_=1.0, to=8.0, textvariable=spinbox_var1)
-    #spinbox_kernel.configure(to=total)     #TEST
-    spinbox_kernel.grid(row=5, column=1, padx=5, pady=[10, 5], sticky=W)
+    global combobox_var_kernel
+    combobox_var_kernel = StringVar()
+    list_kernel = [str(i) for i in range(1, total_kernels() + 1)]
+    combobox_kernel = ttk.Combobox(create_cont, values=list_kernel, textvariable=combobox_var_kernel, state="readonly", font=("Arial",8), width=2)
+    combobox_kernel.current(0)
+    combobox_kernel.grid(row=5, column=1, padx=5, pady=[10, 5], sticky=W)
+
+    # #total = total_kernels()      #TEST
+    # spinbox_kernel = ttk.Spinbox(create_cont, from_=1.0, to=8.0, textvariable=spinbox_var1)
+    # #spinbox_kernel.configure(to=total)     #TEST
+    # spinbox_kernel.grid(row=5, column=1, padx=5, pady=[10, 5], sticky=W)
     
 
 def create_spinbox2_create_ct():
-    global spinbox_var2
-    spinbox_var2 = StringVar(value=1.0)
-    spinbox_proc = ttk.Spinbox(create_cont, from_=1.0, to=100.0, textvariable=spinbox_var2)
-    spinbox_proc.grid(row=7, column=1, padx=5, pady=[0, 15], sticky=W)
+    global entry_proc, message_fail_proc
+    entry_proc = ttk.Entry(create_cont, width=4, validate="focusout", validatecommand=validate_proc)
+    entry_proc.grid(row=7, column=1, padx=5, pady=[0, 15], sticky=W)
+
+    message_fail_proc = ttk.Label(create_cont, text="")
+    message_fail_proc.grid(row=7, column=2, padx=5, pady=[0, 15], sticky=W)
+
+    # spinbox_proc = ttk.Spinbox(create_cont, from_=1.0, to=100.0, textvariable=spinbox_var2)
+    # spinbox_proc.grid(row=7, column=1, padx=5, pady=[0, 15], sticky=W)
+
+def validate_proc():
+    print(type(entry_proc.get())) 
+    if entry_proc.get() != '':
+        try:
+            if 1 <= int(entry_proc.get()) <= 1000:
+                return True
+        except:
+            message_fail_proc.config(text="Ошибка", foreground="red")
+            return False     
+    else:
+        message_fail_proc.config(text="Ошибка", foreground="red")
+        return False
+
+
 
 def create_combobox_create_ct():
-    global sel_image
+    global combobox
+    create_btn.configure(state="enable")
     list_images_cmd = subprocess.run(["machinectl", "list-images"], stdout=subprocess.PIPE).stdout.decode("utf-8").split()
     list_img = []
     for i in range( 6, len(list_images_cmd) - 3, 6):
         list_img.append(list_images_cmd[i])
 
-    combobox_var = StringVar()
+    combobox_var = StringVar(create_cont)
     #combobox = ttk.Combobox(create_cont, textvariable=combobox_var, state="readonly", font=("Arial", 8), width=20)  # Для Win
-    combobox = ttk.Combobox(create_cont, values=list_img, textvariable=combobox_var, state="readonly", font=("Arial", 8), width=20) #Для Linux
+    combobox = ttk.Combobox(create_cont, values=list_img, textvariable=combobox_var, state="readonly", font=("Arial", 8), width=10) #Для Linux
+    combobox.current(0)
     combobox.grid(row=1, column=1, padx=[5,10], pady=[0, 10], sticky=W)
-    sel_image = combobox.get()
+
 
 
 def create_path_create_ct():
@@ -151,5 +185,6 @@ def open_path():
     
 
 def show_path():
+    create_btn.configure(state="enable")
     path_label = ttk.Label(create_cont, text=path_file)
     path_label.grid(row=2, column=2, padx=[5, 10], pady=[0, 25], sticky=W)
