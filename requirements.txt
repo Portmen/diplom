@@ -1,0 +1,5 @@
+tkinter
+subprocess
+re
+multiprocessing
+time
