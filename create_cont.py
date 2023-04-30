@@ -64,7 +64,7 @@ def click_btn1():
 
 
     create_btn = ttk.Button(create_cont, text="Создать", state="disable", command=create_container)
-    create_btn.grid(row=9, column=2, padx=5, pady=[70, 0], sticky=SE)
+    create_btn.grid(row=9, column=2, padx=5, pady=[70, 0], sticky=SE) 
 
     archive_path = ""
     image_name = ""
