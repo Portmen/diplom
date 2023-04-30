@@ -9,7 +9,7 @@ import tkinter.filedialog
 
 
 def click_btn1():
-    global create_cont, archive_btn, header_2, memory_var, memmory_label, create_btn, state, image_btn
+    global create_cont, archive_btn, header_2, memory_var, memmory_label, create_btn, state, image_btn, cpu_var, name_cont
     create_cont = Tk()
     create_cont.title("Create container")
     create_cont.geometry("815x450+600+100")
@@ -54,8 +54,17 @@ def click_btn1():
     process_checkbtn = ttk.Checkbutton(create_cont, text="Ограничить максимальное число процессов в контейнере", variable=process_var, command=create_spinbox2_create_ct)
     process_checkbtn.grid(row=7, column=0, padx=5, pady=[0, 15], sticky=W)
 
+    
+    header_3 = ttk.Label(create_cont, text="Укажите имя контейнера:", font=("Arial", 10))
+    header_3.grid(row=8, column=0, padx=5, pady=5, sticky=W)
+
+
+    name_cont = ttk.Entry(create_cont, width=20)
+    name_cont.grid(row=8, column=1, padx=5, pady=5, sticky=W)
+
+
     create_btn = ttk.Button(create_cont, text="Создать", state="disable", command=create_container)
-    create_btn.grid(row=8, column=2, padx=5, pady=[70, 0], sticky=SE)
+    create_btn.grid(row=9, column=2, padx=5, pady=[70, 0], sticky=SE)
 
     archive_path = ""
     image_name = ""
@@ -67,16 +76,28 @@ def click_btn1():
 def create_container():
      if state.get() == "image":
         image_name = combobox.get()
-        subprocess.run(["machinectl", "start", image_name])
+        cont_mem = str(memory_var.get())
+        cont_cpu = str(combobox_var_kernel.get())
+        cont_ip = ip_entry.get()
+        print(image_name, cont_mem, cont_cpu, cont_ip)
+
+        subprocess.run(['./scripts/create_container.sh',state.get(), image_name, cont_mem, cont_cpu, cont_ip])
+        #subprocess.run(["machinectl", "start", image_name])
+        create_cont.destroy()
      elif state.get() == "archive":
-        state_create = "archive"
+        cont_path = path_file
+        cont_mem = memory_var.get()
+        cont_cpu = cpu_var.get()
+        cont_ip = ip_entry.get()
+        subprocess.run(['./scripts/create_container.sh', state.get(), cont_path, cont_mem, cont_cpu, cont_ip])
+        create_cont.destroy() 
 
 
 '''   Для Linux '''
 def total_memmory():
     full_memmory = subprocess.run(["free", "-b"], stdout=subprocess.PIPE).stdout.decode("utf-8")
     list_memmory = full_memmory.split()
-    return float (list_memmory[7])
+    return float(list_memmory[7])
 
 def total_kernels():
     total = multiprocessing.cpu_count()
@@ -117,7 +138,7 @@ def validate_ip(ip):
 
 def create_spinbox1_create_ct():
     global combobox_var_kernel
-    combobox_var_kernel = StringVar()
+    combobox_var_kernel = StringVar(create_cont)
     list_kernel = [str(i) for i in range(1, total_kernels() + 1)]
     combobox_kernel = ttk.Combobox(create_cont, values=list_kernel, textvariable=combobox_var_kernel, state="readonly", font=("Arial",8), width=2)
     combobox_kernel.current(0)
