@@ -33,9 +33,9 @@ def click_btn1():
     header_2.grid(row=3, column=0, columnspan=3, padx=5, pady=[0,25], sticky=W)
     
     memory_var = IntVar(create_cont, value=512)
-    #tot_memmory = total_memmory()   #TEST
+    tot_memmory = total_memmory()   #TEST
     memmory_scale = ttk.Scale(create_cont, orient="horizontal", length=300, from_=512.0, to=5000.0, variable=memory_var, command=change_label_memmory)
-    #memmory_scale.configure(to=tot_memmory)
+    memmory_scale.configure(to=tot_memmory)
     memmory_scale.grid(row=4, column=0, columnspan=2, padx=5, pady=[0, 15], sticky=W)
     memmory_label = ttk.Label(create_cont)
     memmory_label.grid(row=4, column=1, padx=5, pady=[0, 15], sticky=W)
@@ -156,12 +156,7 @@ def create_spinbox1_create_ct():
     combobox_kernel.current(0)
     combobox_kernel.grid(row=5, column=1, padx=5, pady=[10, 5], sticky=W)
 
-    # #total = total_kernels()      #TEST
-    # spinbox_kernel = ttk.Spinbox(create_cont, from_=1.0, to=8.0, textvariable=spinbox_var1)
-    # #spinbox_kernel.configure(to=total)     #TEST
-    # spinbox_kernel.grid(row=5, column=1, padx=5, pady=[10, 5], sticky=W)
     
-
 def create_spinbox2_create_ct():
     global entry_proc, message_fail_proc
     entry_proc = ttk.Entry(create_cont, width=4, validate="focusout", validatecommand=validate_proc)

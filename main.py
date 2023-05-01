@@ -70,8 +70,7 @@ def reset_list_cont():
     else:
         none_list = ["(пусто)" for i in range(6)]
         tree.insert("", END, values=none_list)                 
-    tree.bind("<<TreeviewSelect>>", change_state_btn)
-       
+    tree.bind("<<TreeviewSelect>>", change_state_btn)       
 
 
 def get_name_cont(tree):
@@ -80,8 +79,10 @@ def get_name_cont(tree):
     cont_name = item["values"][0]
     return cont_name
 
+
 def change_state_btn(event):
     create_btn("enable")
+
 
 def validate_list_cont(ip):
     if validate_ip(ip):
@@ -123,17 +124,12 @@ def click_btn8():
 if __name__ == "__main__":
     app = Tk()
     app.title('ContainerAPP')
-    # app.geometry("1400x800+350+80")
     PATH = '/var/lib/machines/'
     state_btn = "disable"
-    print(total_memmory())
-    
 
     icon = PhotoImage(file = "./icon/icon.png")
     app.iconphoto(True, icon)
     
-
-    #btn.bind("<Enter>", create_container)
     for r in range(11):
         app.rowconfigure(index=r, weight=1)
     for c in range(2):
