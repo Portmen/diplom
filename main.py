@@ -130,10 +130,9 @@ def info_container(name):
 #Разобраться с выводом логов и их обновлением в реальном времени
 
 def click_btn6():
-    global label, cont_name
+    global label, cont_name, log_cont
     log_cont = Tk()
     log_cont.title("Logs")
-    log_cont.geometry("700x800+600+100")
     cont_name = get_name_cont()
     label = ttk.Label(log_cont, background="#FFFFFF")
     label.grid(ipady=20, ipadx=20, padx=10,  pady=10, sticky=NSEW)
@@ -144,9 +143,6 @@ def logs_container():
     full_logs = subprocess.run(["sudo", "journalctl", "-M", cont_name], stdout=subprocess.PIPE).stdout.decode("utf-8")
     label.config(text=full_logs)
     label.after(5000, logs_container)
-
-
-    #logs_list = system("")
 
 
 '''
@@ -176,7 +172,7 @@ def click_btn8():
 if __name__ == "__main__":
     app = Tk()
     app.title('ContainerAPP')
-    app.geometry("1400x800+350+80")
+    # app.geometry("1400x800+350+80")
     PATH = '/var/lib/machines/'
     state_btn = "disable"
     print(total_memmory())

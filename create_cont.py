@@ -12,7 +12,7 @@ def click_btn1():
     global create_cont, archive_btn, header_2, memory_var, memmory_label, create_btn, state, image_btn, cpu_var, name_cont
     create_cont = Tk()
     create_cont.title("Create container")
-    create_cont.geometry("815x450+600+100")
+    # create_cont.geometry("815x450+600+100")
     
 
     state_1 = "image"
@@ -62,7 +62,7 @@ def click_btn1():
     name_cont.grid(row=8, column=1, padx=5, pady=5, sticky=W)
 
     create_btn = ttk.Button(create_cont, text="Создать", state="disable", command=create_container)
-    create_btn.grid(row=9, column=2, padx=5, pady=[70, 0], sticky=SE) 
+    create_btn.grid(row=9, column=2, padx=5, pady=[70, 5], sticky=SE) 
 
     #proc = subprocess.Popen([archive_path, image_name, state_create, disk_size], stdout=subprocess.PIPE)
     #output = proc.stdout.read() #Вывод запуска скрипта
