@@ -12,14 +12,16 @@ from create_cont import *
 
 def create_btn(state_btn):
     global btn_1,  btn_2, btn_3, btn_4, btn_5, btn_6, btn_7, btn_8, btn_9
+    from log_cont import click_btn6
+    from info_cont import click_btn5
     btn_1 = ttk.Button(text="Создать контейнер", command=click_btn1)
     btn_2 = ttk.Button(text="Запуск",  state=state_btn)
     btn_3 = ttk.Button(text="Остановить", state=state_btn, command=power_off)
     btn_4 = ttk.Button(text="Удалить", state=state_btn, command=power_off)
     btn_5 = ttk.Button(text="Информация о контейнере",
-                       command=click_btn5, state=state_btn)
+                       command=lambda: click_btn5(tree), state=state_btn)
     btn_6 = ttk.Button(text="Журнал событий",
-                       command=click_btn6, state=state_btn)
+                       command=lambda: click_btn6(tree), state=state_btn)
     btn_7 = ttk.Button(text="Управление ресурсами",
                        command=click_btn7, state=state_btn)
     btn_8 = ttk.Button(text="Консоль контейнера",
@@ -72,7 +74,7 @@ def reset_list_cont():
        
 
 
-def get_name_cont():
+def get_name_cont(tree):
     cont_id = tree.selection()  #id выбранного контейнера
     item = tree.item(cont_id)
     cont_name = item["values"][0]
@@ -89,60 +91,9 @@ def validate_list_cont(ip):
 
 
 def power_off():
-    cont_name = get_name_cont()
+    cont_name = get_name_cont(tree)
     subprocess.run(["machinectl", "poweroff", cont_name])
     reset_list_cont()
-
-'''
-************************************************************
-**********ФУНКЦИИ ОКНА ИНФОРМАЦИИ О КОНТЕЙНЕРЕ**************
-************************************************************
-'''
-
-
-
-def click_btn5():
-    info_cont = Tk()
-    info_cont.title("Information")
-    info_cont.geometry("700x450+600+100")
-    
-    info_cont.rowconfigure(index=0, weight=1)
-    info_cont.columnconfigure(index=0, weight=1)
-
-    cont_name = get_name_cont()
-    info_var = info_container(cont_name)
-
-
-    label_info = ttk.Label(info_cont, text=info_var, background="#FFFFFF", anchor=NW, padding=5)
-    label_info.grid(ipady=20, ipadx=20, padx=10,  pady=10, sticky=NSEW)
-    
-
-def info_container(name):
-    full_info = subprocess.run(['machinectl', 'status', name], stdout=subprocess.PIPE).stdout.decode("utf-8")
-    return full_info    
-
-'''
-************************************************************
-*************ФУНКЦИИ ОКНА ЛОГОВ КОНТЕЙНЕРА******************
-************************************************************
-'''
-
-#Разобраться с выводом логов и их обновлением в реальном времени
-
-def click_btn6():
-    global label, cont_name, log_cont
-    log_cont = Tk()
-    log_cont.title("Logs")
-    cont_name = get_name_cont()
-    label = ttk.Label(log_cont, background="#FFFFFF")
-    label.grid(ipady=20, ipadx=20, padx=10,  pady=10, sticky=NSEW)
-    logs_container()
-    
-
-def logs_container():
-    full_logs = subprocess.run(["sudo", "journalctl", "-M", cont_name], stdout=subprocess.PIPE).stdout.decode("utf-8")
-    label.config(text=full_logs)
-    label.after(5000, logs_container)
 
 
 '''
