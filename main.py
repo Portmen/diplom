@@ -130,22 +130,21 @@ def info_container(name):
 #Разобраться с выводом логов и их обновлением в реальном времени
 
 def click_btn6():
+    global label, cont_name
     log_cont = Tk()
     log_cont.title("Logs")
     log_cont.geometry("700x800+600+100")
-    log_var = " "
-    log_list = log_var.split("\n")
-    label = ttk.Label(log_cont, text="Логи контейнера", background="#FFFFFF")
+    cont_name = get_name_cont()
+    label = ttk.Label(log_cont, background="#FFFFFF")
     label.grid(ipady=20, ipadx=20, padx=10,  pady=10, sticky=NSEW)
-    while True:
-        time.sleep(5)
-        log_var = " "
-        log_list2 = log_var.split("\n")
-        log_list.append(log_list2[-1])
-        label = ttk.Label(log_cont, text="Логи контейнера", background="#FFFFFF")
-        label.grid(ipady=20, ipadx=20, padx=10,  pady=10, sticky=NSEW)
+    logs_container()
+    
 
-        
+def logs_container():
+    full_logs = subprocess.run(["sudo", "journalctl", "-M", cont_name], stdout=subprocess.PIPE).stdout.decode("utf-8")
+    label.config(text=full_logs)
+    label.after(5000, logs_container)
+
 
     #logs_list = system("")
 
