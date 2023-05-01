@@ -53,7 +53,7 @@ def reset_list_cont():
             count += 1
             if count == 6:
                 if validate_list_cont(list_cont[i]):
-                    add_list.append(list_cont[i])
+                    add_list.append(list_cont[i]) 
                     tree.insert("", END, values=add_list)
                     count = 0
                     add_list.clear()

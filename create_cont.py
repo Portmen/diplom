@@ -58,17 +58,12 @@ def click_btn1():
     header_3 = ttk.Label(create_cont, text="Укажите имя контейнера:", font=("Arial", 10))
     header_3.grid(row=8, column=0, padx=5, pady=5, sticky=W)
 
-
     name_cont = ttk.Entry(create_cont, width=20)
     name_cont.grid(row=8, column=1, padx=5, pady=5, sticky=W)
-
 
     create_btn = ttk.Button(create_cont, text="Создать", state="disable", command=create_container)
     create_btn.grid(row=9, column=2, padx=5, pady=[70, 0], sticky=SE) 
 
-    archive_path = ""
-    image_name = ""
-    disk_size = ""
     #proc = subprocess.Popen([archive_path, image_name, state_create, disk_size], stdout=subprocess.PIPE)
     #output = proc.stdout.read() #Вывод запуска скрипта
     create_cont.mainloop()
@@ -76,20 +71,37 @@ def click_btn1():
 def create_container():
      if state.get() == "image":
         image_name = combobox.get()
-        cont_mem = str(memory_var.get())
-        cont_cpu = str(combobox_var_kernel.get())
-        cont_ip = ip_entry.get()
-        print(image_name, cont_mem, cont_cpu, cont_ip)
-
-        subprocess.run(['./scripts/create_container.sh',state.get(), image_name, cont_mem, cont_cpu, cont_ip])
-        #subprocess.run(["machinectl", "start", image_name])
+        cont_name = name_cont.get()        
+        if cont_name == "":
+            cont_name = image_name
+        subprocess.Popen(['sudo','./scripts/create_container.sh',state.get(), image_name, cont_name], stdout=subprocess.PIPE, stderr=subprocess.PIPE)    
+        try:
+            cont_mem = str(memory_var.get())  
+            cont_cpu = str(int(int(combobox_var_kernel.get()) / (total_kernels() / 100)))
+            cont_ip = ip_entry.get()
+            subprocess.Popen(["sudo", "./scripts/property_container.sh", cont_name, cont_mem, cont_cpu, cont_ip])
+        except:
+            cont_mem = ""  
+            cont_cpu = ""
+            cont_ip = ""
         create_cont.destroy()
+
      elif state.get() == "archive":
         cont_path = path_file
-        cont_mem = memory_var.get()
-        cont_cpu = cpu_var.get()
-        cont_ip = ip_entry.get()
-        subprocess.run(['./scripts/create_container.sh', state.get(), cont_path, cont_mem, cont_cpu, cont_ip])
+        name_img = cont_path.split("/")[-1].split(".")[0]
+        cont_name = name_cont.get()        
+        if cont_name == "":
+            cont_name = name_img
+        subprocess.Popen(['sudo','./scripts/create_container.sh',state.get(), cont_path, cont_name, name_img], stdout=subprocess.PIPE, stderr=subprocess.PIPE)     
+        try:
+            cont_mem = str(memory_var.get())  
+            cont_cpu = str(int(int(combobox_var_kernel.get()) / (total_kernels() / 100)))
+            cont_ip = ip_entry.get()
+            subprocess.Popen(["sudo", "./scripts/property_container.sh", cont_name, cont_mem, cont_cpu, cont_ip])
+        except:
+            cont_mem = ""  
+            cont_cpu = ""
+            cont_ip = ""    
         create_cont.destroy() 
 
 

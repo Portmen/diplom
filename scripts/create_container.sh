@@ -2,11 +2,8 @@
 
 state_create=$1
 image_or_path_archive_name=$2
-memory_max=$3
-cpu_shares=$4
-ip_addres_allow=$5
-name_img=$6
-name_cont=$7
+name_cont=$3
+name_img=$4
 
 
 
@@ -20,7 +17,7 @@ then
     then
       cp "$image_or_path_archive_name" "/var/lib/machines/"
       machinectl import-tar "/var/lib/machines/$name_img.tar.xz" "$name_img"
-      systemd-nspawn --directory="/var/lib/machines/$name_img" -M "$name_cont" -b &
+      sudo systemd-nspawn --directory="/var/lib/machines/$name_img" -M "$name_cont" -b "&"
       
     fi
 
@@ -28,7 +25,7 @@ then
     then
       cp "$image_or_path_archive_name" "/var/lib/machines/$name_img.raw"
       machinectl import-raw "var/lib/machines/$name_img.raw" "$name_img"
-      systemd-nspawn --directory="/var/lib/machines/$name_img" -M "$name_cont" -b &
+      sudo systemd-nspawn --directory="/var/lib/machines/$name_img" -M "$name_cont" -b &
       
     fi    
 
@@ -38,31 +35,31 @@ then
   fi   
 elif [[ "$state_create" == "image" ]]
 then
-  systemd-nspawn --directory="/var/lib/machines/$name_img" -M "$name_cont" -b &
+  sudo systemd-nspawn --directory="/var/lib/machines/$image_or_path_archive_name" -M "$name_cont" -b "&"
     
 else
   echo "Ошибка режима создания контейнера"
   exit 1 
 fi
 
-if [[ (-n "$memory_max") && (-n "$cpu_shares") && (-n "$ip_addres_allow") ]]
-then
-  systemctl set-property systemd-nspawn@"$image_name".service MemoryMax="{$memory_max}M"
-  systemctl set-property systemd-nspawn@"$image_name".service CPUQuota="{$cpu_shares}%"
-  exit 0
-  #machinectl set-limit "$image_or_path_archive_namee" IPAddressAllow="$ip_addres_allow"
-elif [[ -n "$memory_max" && -n "$cpu_shares" ]]
-then
-  systemctl set-property systemd-nspawn@"$image_name".service MemoryMax="{$memory_max}M"
-  systemctl set-property systemd-nspawn@"$image_name".service CPUQuota="{$cpu_shares}%"
-  exit 0
-elif [[ -n "$memory_max" && -n "$ip_addres_allow" ]]
-then
-  machinectl set-limit "$image_name" MemoryMax="$memory_maxG"
-  exit 0
-  #machinectl set-limit "$image_name" IPAddressAllow="$ip_addres_allow"
-else
-  systemctl set-property systemd-nspawn@"$image_name".service MemoryMax="{$memory_max}M"
-  exit 0   
-fi
-exit 0
+# if [[ (-n "$memory_max") && (-n "$cpu_shares") && (-n "$ip_addres_allow") ]]
+# then
+#   systemctl set-property systemd-nspawn@"$image_name".service MemoryMax="$memory_max"M
+#   systemctl set-property systemd-nspawn@"$image_name".service CPUQuota="$cpu_shares"%
+#   exit 0
+#   #machinectl set-limit "$image_or_path_archive_namee" IPAddressAllow="$ip_addres_allow"
+# elif [[ -n "$memory_max" && -n "$cpu_shares" ]]
+# then
+#   systemctl set-property systemd-nspawn@"$image_name".service MemoryMax="$memory_max"M
+#   systemctl set-property systemd-nspawn@"$image_name".service CPUQuota="$cpu_shares"%
+#   exit 0
+# elif [[ -n "$memory_max" && -n "$ip_addres_allow" ]]
+# then
+#   machinectl set-limit "$image_name" MemoryMax="$memory_maxG"
+#   exit 0
+#   #machinectl set-limit "$image_name" IPAddressAllow="$ip_addres_allow"
+# else
+#   systemctl set-property systemd-nspawn@"$image_name".service MemoryMax="$memory_max"M
+#   exit 0   
+# fi
+# exit 0
