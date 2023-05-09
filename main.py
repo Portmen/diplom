@@ -13,8 +13,8 @@ from create_cont import *
 def create_btn(state_btn):
     global btn_1,  btn_2, btn_3, btn_4, btn_5, btn_6, btn_7, btn_8, btn_9
     from log_cont import click_btn6
-    from info_cont import click_btn5
     from resource_management import click_btn7
+    from info_cont import click_btn5
     btn_1 = ttk.Button(text="Создать контейнер", command=click_btn1)
     btn_2 = ttk.Button(text="Запуск",  state=state_btn)
     btn_3 = ttk.Button(text="Остановить", state=state_btn, command=power_off)

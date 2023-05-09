@@ -6,8 +6,9 @@ import re
 
 
 def click_btn7(tree):
+    from main import get_name_cont
     global resource_management, memmory_label, create_btn, memory_var
-    cont_name = tree
+    cont_name = get_name_cont(tree)
 
     resource_management = Tk()
     resource_management.title("Resource management")
@@ -37,18 +38,27 @@ def click_btn7(tree):
     process_checkbtn.grid(row=7, column=0, padx=5, pady=[0, 15], sticky=W)
 
 
-    create_btn = ttk.Button(resource_management, text="Изменить", state="disable")
+    create_btn = ttk.Button(resource_management, text="Изменить", state="disable", command=lambda: change_resources(cont_name))
     create_btn.grid(row=9, column=2, padx=5, pady=[70, 5], sticky=SE) 
 
     #proc = subprocess.Popen([archive_path, image_name, state_create, disk_size], stdout=subprocess.PIPE)
     #output = proc.stdout.read() #Вывод запуска скрипта
     resource_management.mainloop()
 
-def change_resources():
-    mem_tot = str(memory_var.get())
-    kern_tot = str(int(int(combobox_var_kernel.get()) / (total_kernels() / 100)))
-    ip = ip_entry.get()
-    proc_tot = entry_proc.get()
+def change_resources(cont_name):
+   
+    try:
+        mem_tot = str(memory_var.get())
+        kern_tot = str(int(int(combobox_var_kernel.get()) / (total_kernels() / 100)))
+        ip = ip_entry.get()
+        proc_tot = entry_proc.get()
+        subprocess.run(["sudo", "./scripts/property_container.sh", cont_name, mem_tot, kern_tot, ip])
+    except:
+        mem_tot = ""
+        kern_tot = ""
+        ip = ""
+    resource_management.destroy()    
+
 
 
 def change_label_memmory(newVal):

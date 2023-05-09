@@ -187,10 +187,12 @@ def create_combobox_create_ct():
     global combobox
     create_btn.configure(state="enable")
     list_images_cmd = subprocess.run(["machinectl", "list-images"], stdout=subprocess.PIPE).stdout.decode("utf-8").split()
-    list_img = []
-    for i in range( 6, len(list_images_cmd) - 3, 6):
-        list_img.append(list_images_cmd[i])
-
+    try:
+        list_img = []
+        for i in range( 6, len(list_images_cmd) - 3, 6):
+            list_img.append(list_images_cmd[i])
+    except:
+        list_img = []
     combobox_var = StringVar(create_cont)
     #combobox = ttk.Combobox(create_cont, textvariable=combobox_var, state="readonly", font=("Arial", 8), width=20)  # Для Win
     combobox = ttk.Combobox(create_cont, values=list_img, textvariable=combobox_var, state="readonly", font=("Arial", 8), width=10) #Для Linux
