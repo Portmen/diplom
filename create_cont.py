@@ -169,7 +169,7 @@ def create_spinbox2_create_ct():
     # spinbox_proc.grid(row=7, column=1, padx=5, pady=[0, 15], sticky=W)
 
 def validate_proc():
-    print(type(entry_proc.get())) 
+    
     if entry_proc.get() != '':
         try:
             if 1 <= int(entry_proc.get()) <= 1000:

@@ -14,6 +14,7 @@ def create_btn(state_btn):
     global btn_1,  btn_2, btn_3, btn_4, btn_5, btn_6, btn_7, btn_8, btn_9
     from log_cont import click_btn6
     from info_cont import click_btn5
+    from resource_management import click_btn7
     btn_1 = ttk.Button(text="Создать контейнер", command=click_btn1)
     btn_2 = ttk.Button(text="Запуск",  state=state_btn)
     btn_3 = ttk.Button(text="Остановить", state=state_btn, command=power_off)
@@ -23,7 +24,7 @@ def create_btn(state_btn):
     btn_6 = ttk.Button(text="Журнал событий",
                        command=lambda: click_btn6(tree), state=state_btn)
     btn_7 = ttk.Button(text="Управление ресурсами",
-                       command=click_btn7, state=state_btn)
+                       command=lambda: click_btn7(tree), state=state_btn)
     btn_8 = ttk.Button(text="Консоль контейнера",
                        command=click_btn8, state=state_btn)
     btn_9 = ttk.Button(text="Обновить список", command=reset_list_cont)
@@ -95,18 +96,6 @@ def power_off():
     cont_name = get_name_cont(tree)
     subprocess.run(["machinectl", "poweroff", cont_name])
     reset_list_cont()
-
-
-'''
-************************************************************
-********ФУНКЦИИ ОКНА УПРАВЛЕНИЯ РЕСУРСАМИ КОНТЕЙНЕРА********
-************************************************************
-'''
-
-def click_btn7():
-    control_resourses = Tk()
-    control_resourses.title("Control resourses")
-    control_resourses.geometry("700x800+600+100")
 
 
 '''
