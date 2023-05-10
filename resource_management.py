@@ -2,21 +2,16 @@ from tkinter import *
 from tkinter import ttk
 import subprocess
 from create_cont import total_kernels, total_memmory 
-
+import re
 
 
 def click_btn7(tree):
-    global resource_management
+    global resource_management, memmory_label, create_btn, memory_var
     cont_name = tree
 
     resource_management = Tk()
     resource_management.title("Resource management")
     # create_cont.geometry("815x450+600+100")
-    
-
-    state_1 = "image"
-    state_2 = "archive"
-    
 
     header_2 = ttk.Label(resource_management, text="Укажите объём выделяемой оперативной памяти для контейнера(DEFAULT=512МБ):", font=("Arial", 10))
     header_2.grid(row=3, column=0, columnspan=3, padx=5, pady=[0,25], sticky=W)
@@ -29,8 +24,6 @@ def click_btn7(tree):
     memmory_label = ttk.Label(resource_management)
     memmory_label.grid(row=4, column=1, padx=5, pady=[0, 15], sticky=W)
 
-    #memory_entry = ttk.Entry(create_cont, textvariable=memory_var, width=25)
-    #memory_entry.grid(row=4, column=0, padx=10, pady=[0, 15], sticky=W)
     cpu_var = IntVar(resource_management)
     cpu_checkbtn = ttk.Checkbutton(resource_management, text="Ограничить число виртуальных ядер", variable=cpu_var, command=create_combobox_management_ct )
     cpu_checkbtn.grid(row=5, column=0, padx=5, pady=[10, 5], sticky=W)
@@ -51,6 +44,44 @@ def click_btn7(tree):
     #output = proc.stdout.read() #Вывод запуска скрипта
     resource_management.mainloop()
 
+def change_resources():
+    mem_tot = str(memory_var.get())
+    kern_tot = str(int(int(combobox_var_kernel.get()) / (total_kernels() / 100)))
+    ip = ip_entry.get()
+    proc_tot = entry_proc.get()
+
+
+def change_label_memmory(newVal):
+    int_var = str(round(float(newVal)))
+    memmory_label["text"] = str(int_var) + " Мб"
+    create_btn.configure(state="enable")
+         
+
+def create_ip_create_ct():
+    global ip_entry, message_fail
+    ip_entry = ttk.Entry(resource_management, width=18, validate="focusout", validatecommand=message_fail_ip)
+    ip_entry.grid(row=6, column=1, padx=5, pady=[0,15], sticky=W)
+    message_fail = ttk.Label(resource_management, text="Пример: 192.168.1.0/24")
+    message_fail.grid(row=6, column=2, padx=5, pady=[0, 15], sticky=W)    
+
+def message_fail_ip():
+    global ip_addr
+    ip_addr = ip_entry.get()
+    if validate_ip(ip_addr):
+        message_fail.config(text="Ок", foreground="green")
+        create_btn.configure(state="enable")
+        return True
+    else:
+        message_fail.config(text="Неверно: xxx.xxx.xxx.xxx/xx", foreground="red")
+        return False
+
+
+def validate_ip(ip):
+    pattern = r"^(\d{1,3}\.){3}\d{1,3}/\d{1,2}$"
+    if re.match(pattern, ip):
+        return True
+    else:
+        return False
 
 def create_combobox_management_ct():
     global combobox_var_kernel
@@ -59,10 +90,12 @@ def create_combobox_management_ct():
     combobox_kernel = ttk.Combobox(resource_management, values=list_kernel, textvariable=combobox_var_kernel, state="readonly", font=("Arial",8), width=2)
     combobox_kernel.current(0)
     combobox_kernel.grid(row=5, column=1, padx=5, pady=[10, 5], sticky=W)
+    create_btn.configure(state="enable")
 
     
 def create_entry_management_ct():
     global entry_proc, message_fail_proc
+
     entry_proc = ttk.Entry(resource_management, width=4, validate="focusout", validatecommand=validate_proc)
     entry_proc.grid(row=7, column=1, padx=5, pady=[0, 15], sticky=W)
 
@@ -75,6 +108,7 @@ def validate_proc():
     if entry_proc.get() != '':
         try:
             if 1 <= int(entry_proc.get()) <= 1000:
+                create_btn.configure(state="enable")
                 return True
         except:
             message_fail_proc.config(text="Ошибка", foreground="red")
