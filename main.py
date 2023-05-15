@@ -45,8 +45,11 @@ def reset_list_cont():
     list_cont = subprocess.run(["machinectl", "list"], stdout=subprocess.PIPE).stdout.decode("utf-8").split()
     head_tree = ("machines", "class", "service", "os", "version", "addresses")
     tree = ttk.Treeview(columns=head_tree, show="headings")
+    tree.tag_configure("style", font=("arial", 10))
     for i in range(len(head_tree) + 1):
         tree.column("#"+str(i), stretch=True, width=170)
+    style = ttk.Style()
+    tree.tag_configure("style", font=("Arial", 9))
     tree.grid(row=1, rowspan=9, column=1, pady=[
                    50, 10], padx=[10, 30], sticky=NSEW)
     for i in head_tree:
@@ -59,11 +62,11 @@ def reset_list_cont():
             if count == 6:
                 if validate_list_cont(list_cont[i]):
                     add_list.append(list_cont[i]) 
-                    tree.insert("", END, values=add_list)
+                    tree.insert("", END, values=add_list, tags=("style",))
                     count = 0
                     add_list.clear()
                 else:
-                    tree.insert("", END, values=add_list)
+                    tree.insert("", END, values=add_list, tags=("style",))
                     count = 0
                     add_list.clear()
                     count += 1
@@ -72,7 +75,8 @@ def reset_list_cont():
                 add_list.append(list_cont[i])
     else:
         none_list = ["(пусто)" for i in range(6)]
-        tree.insert("", END, values=none_list)                 
+        tree.insert("", END, values=none_list, tags=("style",))
+
     tree.bind("<<TreeviewSelect>>", change_state_btn)       
 
 

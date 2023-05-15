@@ -10,6 +10,7 @@ def click_btn6(tree):
     from main import get_name_cont
     log_cont = Tk()
     log_cont.title("Logs")
+    log_cont.geometry("900x700")
 
     scrollbar = ttk.Scrollbar(log_cont, orient=VERTICAL)
     scrollbar.pack(side=RIGHT, fill=Y)
@@ -30,6 +31,7 @@ def logs_container():
     listbox.after(5000, reset_logs)
 
 def reset_logs():
+    global full_logs
     new_logs = subprocess.run(["sudo", "journalctl", "-M", cont_name], stdout=subprocess.PIPE).stdout.decode("utf-8").split("\n")
     if len(new_logs) > len(full_logs):
         for i in range(len(full_logs), len(new_logs)):
