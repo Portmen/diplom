@@ -45,6 +45,8 @@ def reset_list_cont():
     list_cont = subprocess.run(["machinectl", "list"], stdout=subprocess.PIPE).stdout.decode("utf-8").split()
     head_tree = ("machines", "class", "service", "os", "version", "addresses")
     tree = ttk.Treeview(columns=head_tree, show="headings")
+    for i in range(len(head_tree) + 1):
+        tree.column("#"+str(i), stretch=True, width=170)
     tree.grid(row=1, rowspan=9, column=1, pady=[
                    50, 10], padx=[10, 30], sticky=NSEW)
     for i in head_tree:
